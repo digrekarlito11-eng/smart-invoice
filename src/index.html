@@ -56,12 +56,12 @@
   </header>
 
   <!-- ONGLETS DE BASCULE SUR MOBILE (no-print) -->
-  <div class="no-print lg:hidden bg-slate-800/90 border-b border-slate-700 px-4 py-2 flex justify-center space-x-2">
-    <button id="tab-edit" class="flex-1 py-2 text-xs font-bold rounded-lg bg-blue-600 text-white transition-all text-center">
+  <div class="no-print lg:hidden bg-slate-800/90 border-b border-slate-700 px-4 py-2 flex justify-center space-x-2 sticky top-[57px] z-40 backdrop-blur-md">
+    <button id="tab-edit" class="flex-1 py-2 text-xs font-bold rounded-lg bg-blue-600 text-white transition-all text-center shadow-md">
       ✏️ Éditeur & Design
     </button>
     <button id="tab-preview" class="flex-1 py-2 text-xs font-bold rounded-lg bg-slate-700 text-slate-300 transition-all text-center">
-      📄 Aperçu Facture
+      📄 Voir l'Aperçu Direct
     </button>
   </div>
 
@@ -71,16 +71,75 @@
     <!-- PANNEAU GAUCHE : L'Éditeur Réactif (no-print) -->
     <section id="panel-editor" class="no-print lg:col-span-6 bg-slate-800 rounded-2xl p-5 sm:p-6 border border-slate-700/80 shadow-xl space-y-6">
       
-      <!-- 1. Thème Visuel & Arrière-plans (La Signature de Marque) -->
+      <!-- 1. SÉLECTION VISUELLE DES ARRIÈRE-PLANS (LA NOUVEAUTÉ DISRUPTIVE) -->
       <div class="space-y-3 pb-5 border-b border-slate-700">
         <div class="flex items-center justify-between">
-          <label class="block text-xs font-bold uppercase tracking-wider text-blue-400">
-            🎨 Design & Thème Visuel
+          <label class="block text-xs font-black uppercase tracking-wider text-amber-400">
+            ✨ 1. Choisir l'Arrière-Plan de la Facture
           </label>
-          <span class="text-[11px] text-slate-400">Sortir du lot</span>
+          <span class="text-[11px] text-slate-400">Cliquez pour tester</span>
         </div>
 
-        <!-- Boutons Thèmes -->
+        <div class="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
+          
+          <button type="button" data-pattern="aura" class="pattern-btn p-2.5 rounded-xl border border-slate-700 bg-slate-900/90 text-left hover:border-amber-500 transition-all group">
+            <div class="w-full h-8 rounded-lg bg-gradient-to-r from-blue-100 via-indigo-100 to-cyan-100 border border-slate-300 mb-1.5 flex items-center justify-center">
+              <span class="text-xs">🌈</span>
+            </div>
+            <span class="text-xs font-bold text-white block group-hover:text-amber-400">Aura Mesh</span>
+            <p class="text-[10px] text-slate-400">Dégradé lumineux</p>
+          </button>
+
+          <button type="button" data-pattern="afro" class="pattern-btn p-2.5 rounded-xl border border-slate-700 bg-slate-900/90 text-left hover:border-amber-500 transition-all group">
+            <div class="w-full h-8 rounded-lg bg-amber-50 border-l-4 border-amber-600 mb-1.5 flex items-center justify-center">
+              <span class="text-xs">🌍</span>
+            </div>
+            <span class="text-xs font-bold text-white block group-hover:text-amber-400">Wax Chic</span>
+            <p class="text-[10px] text-slate-400">Motif Africain & Or</p>
+          </button>
+
+          <button type="button" data-pattern="obsidian" class="pattern-btn p-2.5 rounded-xl border border-slate-700 bg-slate-900/90 text-left hover:border-amber-500 transition-all group">
+            <div class="w-full h-8 rounded-lg bg-slate-950 border border-slate-700 mb-1.5 flex items-center justify-center">
+              <span class="text-xs">🌑</span>
+            </div>
+            <span class="text-xs font-bold text-white block group-hover:text-amber-400">Dark Obsidian</span>
+            <p class="text-[10px] text-slate-400">Mode sombre luxe</p>
+          </button>
+
+          <button type="button" data-pattern="parchment" class="pattern-btn p-2.5 rounded-xl border border-slate-700 bg-slate-900/90 text-left hover:border-amber-500 transition-all group">
+            <div class="w-full h-8 rounded-lg bg-amber-100/50 border-2 border-amber-500 mb-1.5 flex items-center justify-center">
+              <span class="text-xs">📜</span>
+            </div>
+            <span class="text-xs font-bold text-white block group-hover:text-amber-400">Parchemin</span>
+            <p class="text-[10px] text-slate-400">Double cadre or</p>
+          </button>
+
+          <button type="button" data-pattern="white" class="pattern-btn p-2.5 rounded-xl border border-slate-700 bg-slate-900/90 text-left hover:border-amber-500 transition-all group">
+            <div class="w-full h-8 rounded-lg bg-white border border-slate-300 mb-1.5 flex items-center justify-center">
+              <span class="text-xs">⚪</span>
+            </div>
+            <span class="text-xs font-bold text-white block group-hover:text-amber-400">Blanc Pur</span>
+            <p class="text-[10px] text-slate-400">Éco-encre papier</p>
+          </button>
+
+        </div>
+
+        <!-- Options supplémentaires : Sceau Officiel -->
+        <div class="flex items-center justify-between pt-1 text-xs text-slate-300 bg-slate-900/60 p-2.5 rounded-xl border border-slate-700">
+          <span class="flex items-center space-x-2">
+            <span>🛡️</span>
+            <span>Tampon officiel "Certifié" en filigrane</span>
+          </span>
+          <input type="checkbox" id="stamp-toggle" class="w-4 h-4 text-blue-600 rounded bg-slate-800 border-slate-700 focus:ring-0 cursor-pointer" checked>
+        </div>
+      </div>
+
+      <!-- 2. SÉLECTION DU THÈME DE COULEUR -->
+      <div class="space-y-3 pb-5 border-b border-slate-700">
+        <label class="block text-xs font-black uppercase tracking-wider text-blue-400">
+          🎨 2. Palette & Couleurs d'Accent
+        </label>
+
         <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
           
           <button type="button" data-theme="fintech" class="theme-btn p-2.5 rounded-xl border border-slate-700 bg-slate-900/80 text-left hover:border-blue-500 transition-all group">
@@ -88,7 +147,7 @@
               <span class="w-3 h-3 rounded-full bg-blue-500"></span>
               <span class="text-xs font-bold text-white group-hover:text-blue-400">Neo-Fintech</span>
             </div>
-            <p class="text-[10px] text-slate-400">Bleu Roi & Tech</p>
+            <p class="text-[10px] text-slate-400">Bleu Électrique</p>
           </button>
 
           <button type="button" data-theme="sahara" class="theme-btn p-2.5 rounded-xl border border-slate-700 bg-slate-900/80 text-left hover:border-amber-500 transition-all group">
@@ -96,7 +155,7 @@
               <span class="w-3 h-3 rounded-full bg-amber-500"></span>
               <span class="text-xs font-bold text-white group-hover:text-amber-400">Sahara Gold</span>
             </div>
-            <p class="text-[10px] text-slate-400">Luxe & Prestige</p>
+            <p class="text-[10px] text-slate-400">Or & Ambre</p>
           </button>
 
           <button type="button" data-theme="vibrant" class="theme-btn p-2.5 rounded-xl border border-slate-700 bg-slate-900/80 text-left hover:border-cyan-500 transition-all group">
@@ -104,7 +163,7 @@
               <span class="w-3 h-3 rounded-full bg-cyan-400"></span>
               <span class="text-xs font-bold text-white group-hover:text-cyan-400">Afro-Pop</span>
             </div>
-            <p class="text-[10px] text-slate-400">Wave & Sunset</p>
+            <p class="text-[10px] text-slate-400">Turquoise & Wave</p>
           </button>
 
           <button type="button" data-theme="editorial" class="theme-btn p-2.5 rounded-xl border border-slate-700 bg-slate-900/80 text-left hover:border-slate-400 transition-all group">
@@ -112,24 +171,13 @@
               <span class="w-3 h-3 rounded-full bg-slate-200"></span>
               <span class="text-xs font-bold text-white group-hover:text-slate-300">Studio Noir</span>
             </div>
-            <p class="text-[10px] text-slate-400">Minimal Suisse</p>
+            <p class="text-[10px] text-slate-400">Noir & Blanc</p>
           </button>
 
         </div>
-
-        <!-- Arrière-plans & Motifs -->
-        <div class="pt-2">
-          <label for="pattern-select" class="block text-xs text-slate-400 mb-1">Motif d'Arrière-plan de la Facture</label>
-          <select id="pattern-select" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white focus:border-blue-500 focus:outline-none">
-            <option value="dots">✨ Micro-points modernes (Subtil & Haute Technologie)</option>
-            <option value="grid">📐 Grille architecte fine (Épuré & Précis)</option>
-            <option value="watermark">🏷️ Filigrane Numéro de Facture géant</option>
-            <option value="none">⚪ Fond blanc pur sans motif</option>
-          </select>
-        </div>
       </div>
 
-      <!-- 2. Type de document & Numérotation -->
+      <!-- 3. TYPE DE DOCUMENT & NUMÉRO -->
       <div class="space-y-3 pb-5 border-b border-slate-700">
         <label class="block text-xs font-bold uppercase tracking-wider text-slate-400">Type de document</label>
         <div class="grid grid-cols-2 gap-3">
@@ -159,7 +207,7 @@
         </div>
       </div>
 
-      <!-- 3. Devise & Zone Monétaire -->
+      <!-- 4. DEVISE & ZONE MONÉTAIRE -->
       <div class="space-y-1.5 pb-5 border-b border-slate-700">
         <label for="currency-select" class="block text-xs font-bold uppercase tracking-wider text-slate-400">
           🌍 Devise & Zone Monétaire
@@ -170,7 +218,7 @@
         <p class="text-[11px] text-slate-400">Supporte le Franc CFA (XOF/XAF), Naira, Cedi, Dirham, Shilling, EUR, USD...</p>
       </div>
 
-      <!-- 4. Émetteur & Destinataire -->
+      <!-- 5. ÉMETTEUR & DESTINATAIRE -->
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pb-5 border-b border-slate-700">
         
         <!-- Émetteur -->
@@ -194,7 +242,7 @@
 
       </div>
 
-      <!-- 5. Lignes de Prestations / Produits -->
+      <!-- 6. LIGNES DE PRESTATIONS -->
       <div class="space-y-3 pb-5 border-b border-slate-700">
         <div class="flex items-center justify-between">
           <label class="block text-xs font-bold uppercase tracking-wider text-slate-400">Prestations & Tarifs</label>
@@ -220,7 +268,7 @@
         </div>
       </div>
 
-      <!-- 6. Règlement : Mobile Money & Stripe -->
+      <!-- 7. RÈGLEMENT : MOBILE MONEY & STRIPE -->
       <div class="space-y-3 pb-5 border-b border-slate-700">
         <label class="block text-xs font-bold uppercase tracking-wider text-slate-400">
           📲 Modalités d'Encaissement
@@ -239,7 +287,7 @@
         </div>
       </div>
 
-      <!-- 7. Notes et Mentions Légales -->
+      <!-- 8. NOTES & CONDITIONS -->
       <div class="space-y-1.5">
         <label for="invoice-notes" class="block text-xs font-bold uppercase tracking-wider text-slate-400">Notes & Conditions</label>
         <textarea id="invoice-notes" rows="2" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white focus:border-blue-500 focus:outline-none" placeholder="Ex: Conditions de règlement, délais de livraison..."></textarea>
@@ -248,15 +296,17 @@
     </section>
 
     <!-- PANNEAU DROIT : Aperçu A4 en direct & Rendu Imprimable -->
-    <section id="panel-preview" class="lg:col-span-6 flex flex-col items-center">
+    <section id="panel-preview" class="lg:col-span-6 flex flex-col items-center w-full">
       <div class="w-full sticky top-20">
         
         <div class="no-print mb-3 flex items-center justify-between text-xs text-slate-400 px-2">
           <span class="flex items-center space-x-1.5">
-            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-            <span>Aperçu Haute Définition A4</span>
+            <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
+            <span class="font-bold text-slate-200">Aperçu Haute Définition A4</span>
           </span>
-          <span class="text-[11px] bg-slate-800 px-2.5 py-0.5 rounded-full border border-slate-700">Design Anti-Ennui</span>
+          <span class="text-[11px] bg-slate-800 text-amber-400 font-bold px-2.5 py-0.5 rounded-full border border-slate-700">
+            Arrière-plan en Direct
+          </span>
         </div>
 
         <!-- Le Document Papier A4 (Ce bloc est capturé pour le PDF) -->

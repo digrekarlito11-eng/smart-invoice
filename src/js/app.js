@@ -1,6 +1,6 @@
 /**
  * Smart Invoice — Application Principale
- * Gestion d'état réactive, calculs dynamiques, thèmes visuels disruptifs & export.
+ * Gestion d'état réactive, calculs dynamiques, arrière-plans riches & export.
  */
 
 import { CURRENCIES, formatAmount } from './currencies.js';
@@ -9,9 +9,10 @@ import { generateInvoicePDF } from './pdf-engine.js';
 
 // État par défaut de la facture / devis
 const DEFAULT_STATE = {
-  docType: 'FACTURE', // 'FACTURE' ou 'DEVIS'
-  theme: 'fintech',   // 'fintech', 'sahara', 'vibrant', 'editorial'
-  pattern: 'dots',    // 'none', 'dots', 'grid', 'watermark'
+  docType: 'FACTURE',  // 'FACTURE' ou 'DEVIS'
+  theme: 'fintech',    // 'fintech', 'sahara', 'vibrant', 'editorial'
+  pattern: 'aura',     // 'aura', 'afro', 'obsidian', 'parchment', 'white'
+  stamp: true,         // Sceau officiel visible
   invoiceNumber: 'FAC-2026-001',
   issueDate: new Date().toISOString().split('T')[0],
   dueDate: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
@@ -118,20 +119,30 @@ class SmartInvoiceApp {
       radio.checked = radio.value === this.state.docType;
     });
 
-    // Thème visuel
+    // Boutons Thèmes
     document.querySelectorAll('.theme-btn').forEach(btn => {
       const themeVal = btn.dataset.theme;
       if (themeVal === this.state.theme) {
-        btn.classList.add('ring-2', 'ring-blue-500', 'border-transparent');
+        btn.classList.add('ring-2', 'ring-blue-500', 'border-blue-500', 'bg-slate-700/80');
       } else {
-        btn.classList.remove('ring-2', 'ring-blue-500', 'border-transparent');
+        btn.classList.remove('ring-2', 'ring-blue-500', 'border-blue-500', 'bg-slate-700/80');
       }
     });
 
-    // Motif d'arrière-plan
-    const patternSelect = document.getElementById('pattern-select');
-    if (patternSelect) {
-      patternSelect.value = this.state.pattern || 'dots';
+    // Boutons Arrière-plans (Pattern)
+    document.querySelectorAll('.pattern-btn').forEach(btn => {
+      const patVal = btn.dataset.pattern;
+      if (patVal === this.state.pattern) {
+        btn.classList.add('ring-2', 'ring-amber-500', 'border-amber-500', 'bg-slate-700/80');
+      } else {
+        btn.classList.remove('ring-2', 'ring-amber-500', 'border-amber-500', 'bg-slate-700/80');
+      }
+    });
+
+    // Sceau officiel toggle
+    const stampCheckbox = document.getElementById('stamp-toggle');
+    if (stampCheckbox) {
+      stampCheckbox.checked = this.state.stamp !== false;
     }
 
     // Numéro et dates
@@ -231,38 +242,45 @@ class SmartInvoiceApp {
     const provider = getProvider(this.state.paymentMethod);
     const isDevis = this.state.docType === 'DEVIS';
 
-    // Classes de style dynamique
+    // 1. Thème d'accentuation
     const themeClass = `theme-${this.state.theme || 'fintech'}`;
-    const patternClass = this.state.pattern === 'dots' 
-      ? 'bg-pattern-dots' 
-      : this.state.pattern === 'grid' 
-      ? 'bg-pattern-grid' 
-      : '';
 
-    previewContainer.className = `invoice-paper ${themeClass} ${patternClass} rounded-2xl relative`;
+    // 2. Arrière-plan visible
+    let patternClass = 'bg-aura-mesh';
+    if (this.state.pattern === 'afro') patternClass = 'bg-afro-geometric';
+    else if (this.state.pattern === 'obsidian') patternClass = 'bg-dark-obsidian';
+    else if (this.state.pattern === 'parchment') patternClass = 'bg-luxury-parchment';
+    else if (this.state.pattern === 'white') patternClass = 'bg-clean-white';
+
+    previewContainer.className = `invoice-paper ${themeClass} ${patternClass} relative shadow-2xl transition-all duration-300`;
 
     previewContainer.innerHTML = `
-      <!-- BANDEAU SUPÉRIEUR GÉOMÉTRIQUE DISRUPTIF -->
+      <!-- BANDEAU SUPÉRIEUR GÉOMÉTRIQUE -->
       <div class="theme-header-band w-full"></div>
 
-      <!-- FILIGRANE GÉANT ARRIÈRE-PLAN (si option activée) -->
-      ${this.state.pattern === 'watermark' ? `
-        <div class="watermark-bg-number">${this.escapeHTML(this.state.invoiceNumber)}</div>
+      <!-- SCEAU OFFICIEL CERTIFIÉ (SI ACTIVÉ) -->
+      ${this.state.stamp !== false ? `
+        <div class="official-watermark-stamp">
+          <span class="text-[9px] font-black uppercase tracking-widest">SMART INVOICE</span>
+          <span class="text-[13px] font-black">CERTIFIÉ</span>
+          <span class="text-[8px] font-mono tracking-tight font-bold">${this.escapeHTML(this.state.invoiceNumber)}</span>
+        </div>
       ` : ''}
 
-      <div class="p-8 md:p-12 text-slate-800 text-sm leading-relaxed relative z-10">
+      <div class="invoice-content-wrap p-8 md:p-12 text-sm leading-relaxed relative z-10">
         
-        <!-- EN-TÊTE MODERNE : Identité, Titre & Statut -->
+        <!-- EN-TÊTE : Identité & Numérotation -->
         <div class="flex flex-col md:flex-row justify-between items-start border-b border-slate-200/80 pb-8 mb-8 gap-6">
-          <div>
+          <div class="max-w-md">
             <div class="flex items-center space-x-2.5 mb-2.5">
               <span class="inline-block px-3.5 py-1 rounded-full text-xs font-black tracking-wider uppercase theme-accent-badge shadow-sm">
                 ${this.state.docType}
               </span>
-              <span class="inline-block px-2.5 py-0.5 rounded-md text-[11px] font-semibold bg-slate-100 text-slate-600 border border-slate-200">
+              <span class="inline-block px-2.5 py-0.5 rounded-md text-[11px] font-bold bg-slate-100/90 text-slate-700 border border-slate-300/60">
                 Statut : En attente
               </span>
             </div>
+            
             <h1 class="text-3xl font-extrabold text-slate-900 tracking-tight font-heading">${this.escapeHTML(this.state.sender.name || 'Votre Entreprise')}</h1>
             <p class="text-slate-500 font-medium text-xs mt-0.5">${this.escapeHTML(this.state.sender.title || 'Prestations de services & Produits')}</p>
             
@@ -273,22 +291,22 @@ class SmartInvoiceApp {
             </div>
           </div>
           
-          <div class="text-left md:text-right bg-slate-50 md:bg-transparent p-4 md:p-0 rounded-xl border md:border-0 border-slate-200 w-full md:w-auto">
+          <div class="text-left md:text-right bg-white/70 md:bg-transparent p-4 md:p-0 rounded-xl border md:border-0 border-slate-200 w-full md:w-auto shadow-sm md:shadow-none">
             <div class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-0.5">Identifiant Unique</div>
             <div class="text-2xl font-black text-slate-900 font-mono tracking-tight mb-2.5">${this.escapeHTML(this.state.invoiceNumber)}</div>
             <div class="text-xs text-slate-500 space-y-1">
-              <p><span class="font-medium text-slate-400">Émission :</span> <strong class="text-slate-700">${this.formatDate(this.state.issueDate)}</strong></p>
-              <p><span class="font-medium text-slate-400">Échéance :</span> <strong class="text-slate-700">${this.formatDate(this.state.dueDate)}</strong></p>
+              <p><span class="font-medium text-slate-400">Émission :</span> <strong class="text-slate-700 font-bold">${this.formatDate(this.state.issueDate)}</strong></p>
+              <p><span class="font-medium text-slate-400">Échéance :</span> <strong class="text-slate-700 font-bold">${this.formatDate(this.state.dueDate)}</strong></p>
             </div>
           </div>
         </div>
 
-        <!-- CARTES DESTINATAIRE & TOTAL DU -->
+        <!-- CARTES CLIENT & TOTAL DÛ -->
         <div class="grid grid-cols-1 md:grid-cols-12 gap-5 mb-8">
           
           <!-- Carte Client -->
           <div class="md:col-span-7 bg-white rounded-xl p-5 border border-slate-200/90 shadow-sm relative overflow-hidden">
-            <div class="absolute top-0 left-0 w-1 h-full bg-slate-300"></div>
+            <div class="absolute top-0 left-0 w-1.5 h-full bg-blue-600"></div>
             <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider block mb-1">Destinataire / Client</span>
             <div class="text-base font-extrabold text-slate-900">${this.escapeHTML(this.state.client.name || 'Nom du Client')}</div>
             <div class="text-xs text-slate-600 mt-2 space-y-1">
@@ -298,13 +316,13 @@ class SmartInvoiceApp {
             </div>
           </div>
 
-          <!-- Total Due Box (Design Impactant) -->
-          <div class="md:col-span-5 theme-total-box flex flex-col justify-between shadow-md">
+          <!-- Total Due Hero Box -->
+          <div class="md:col-span-5 theme-total-box flex flex-col justify-between shadow-lg p-5">
             <div>
-              <span class="text-[11px] font-bold tracking-wider uppercase opacity-80 block mb-1">Net à Payer</span>
+              <span class="text-[11px] font-bold tracking-wider uppercase opacity-80 block mb-1">Montant Net à Payer</span>
               <div class="text-2xl md:text-3xl font-black font-heading tracking-tight">${formatAmount(totals.grandTotal, curr)}</div>
             </div>
-            <div class="pt-3 border-t border-white/15 text-[11px] opacity-80 flex justify-between items-center">
+            <div class="pt-3 border-t border-white/20 text-[11px] opacity-90 flex justify-between items-center font-medium">
               <span>Devise : <strong>${curr}</strong></span>
               <span>${this.state.items.length} prestation(s)</span>
             </div>
@@ -312,8 +330,8 @@ class SmartInvoiceApp {
 
         </div>
 
-        <!-- TABLEAU DES PRESTATIONS DISRUPTIF (Cartes aérées & Pill Quantité) -->
-        <div class="overflow-x-auto mb-8 rounded-xl border border-slate-200 shadow-sm">
+        <!-- TABLEAU DES PRESTATIONS -->
+        <div class="overflow-x-auto mb-8 rounded-xl border border-slate-200 shadow-sm invoice-table">
           <table class="w-full text-left border-collapse">
             <thead>
               <tr class="bg-slate-50 border-b border-slate-200 text-[11px] font-bold text-slate-500 uppercase tracking-wider">
@@ -327,7 +345,7 @@ class SmartInvoiceApp {
               ${this.state.items.map((item, i) => {
                 const rowTotal = (Number(item.quantity) || 0) * (Number(item.unitPrice) || 0);
                 return `
-                  <tr class="${i % 2 === 1 ? 'bg-slate-50/40' : ''} hover:bg-slate-50 transition-colors">
+                  <tr class="${i % 2 === 1 ? 'bg-slate-50/50' : ''} hover:bg-blue-50/30 transition-colors">
                     <td class="py-3.5 px-4 font-semibold text-slate-800">
                       ${this.escapeHTML(item.description || 'Prestation')}
                     </td>
@@ -339,7 +357,7 @@ class SmartInvoiceApp {
                     <td class="py-3.5 px-4 text-right text-slate-600 font-mono">
                       ${formatAmount(item.unitPrice, curr)}
                     </td>
-                    <td class="py-3.5 px-4 text-right font-bold text-slate-900 font-mono">
+                    <td class="py-3.5 px-4 text-right font-black text-slate-900 font-mono">
                       ${formatAmount(rowTotal, curr)}
                     </td>
                   </tr>
@@ -351,7 +369,7 @@ class SmartInvoiceApp {
 
         <!-- SOUS-TOTALS & DÉCOMPTE -->
         <div class="flex justify-end mb-8">
-          <div class="w-full md:w-80 space-y-2 text-xs bg-slate-50 p-4 rounded-xl border border-slate-200">
+          <div class="w-full md:w-80 space-y-2 text-xs bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
             <div class="flex justify-between text-slate-600">
               <span>Sous-total HT :</span>
               <span class="font-bold text-slate-800 font-mono">${formatAmount(totals.subtotal, curr)}</span>
@@ -370,19 +388,19 @@ class SmartInvoiceApp {
             ` : ''}
             <div class="flex justify-between border-t border-slate-300 pt-2.5 text-sm font-black text-slate-900">
               <span>Total Général :</span>
-              <span class="theme-highlight-text font-mono">${formatAmount(totals.grandTotal, curr)}</span>
+              <span class="theme-highlight-text font-mono text-base">${formatAmount(totals.grandTotal, curr)}</span>
             </div>
           </div>
         </div>
 
-        <!-- LE "PAYMENT PASS" DISRUPTIF (MOBILE MONEY & STRIPE) -->
-        <div class="theme-payment-card rounded-xl p-5 mb-8 shadow-sm">
+        <!-- LE "PAYMENT PASS" MOBILE MONEY & STRIPE -->
+        <div class="theme-payment-card rounded-xl p-5 mb-8 shadow-sm border border-slate-200 bg-white">
           <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-3">
             <div class="flex items-center space-x-2">
-              <span class="text-xl">${provider.icon}</span>
+              <span class="text-2xl">${provider.icon}</span>
               <div>
-                <span class="text-xs font-black uppercase tracking-wider text-slate-800 block">Règlement Recommandé</span>
-                <span class="text-[11px] text-slate-500">${provider.name}</span>
+                <span class="text-xs font-black uppercase tracking-wider text-slate-800 block">Règlement Rapide Recommandé</span>
+                <span class="text-[11px] text-slate-500 font-medium">${provider.name}</span>
               </div>
             </div>
             <span class="self-start sm:self-auto px-3 py-1 rounded-full text-xs font-bold text-white shadow-sm" style="background-color: ${provider.color};">
@@ -392,27 +410,27 @@ class SmartInvoiceApp {
 
           <div class="bg-white/90 backdrop-blur-sm p-3.5 rounded-lg border border-slate-200/80 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
             <div>
-              <span class="text-[11px] text-slate-400 font-medium block">${provider.labelField} :</span>
+              <span class="text-[11px] text-slate-400 font-semibold block">${provider.labelField} :</span>
               <span class="text-sm sm:text-base font-black text-slate-900 font-mono tracking-wide">${this.escapeHTML(this.state.paymentDetails || 'Non spécifié')}</span>
             </div>
-            <div class="text-[11px] font-semibold text-slate-500 bg-slate-100 px-2.5 py-1 rounded border border-slate-200">
-              ⚡ Paiement direct sécurisé
+            <div class="text-[11px] font-bold text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded border border-emerald-200">
+              ⚡ Paiement direct sans frais
             </div>
           </div>
         </div>
 
         <!-- NOTES & CONDITIONS -->
         ${this.state.notes ? `
-          <div class="text-xs text-slate-500 mb-8 p-3.5 rounded-xl bg-slate-50/70 border border-slate-200/70">
+          <div class="text-xs text-slate-500 mb-8 p-3.5 rounded-xl bg-white/70 border border-slate-200/70">
             <strong class="text-slate-700 block mb-1">Notes & Conditions :</strong>
             <p class="leading-relaxed">${this.escapeHTML(this.state.notes)}</p>
           </div>
         ` : ''}
 
         <!-- PIED DE PAGE & FILIGRANE DE CONVERSION -->
-        <div class="border-t border-slate-200/80 pt-4 flex flex-col sm:flex-row justify-between items-center text-[11px] text-slate-400 gap-2">
+        <div class="border-t border-slate-300/80 pt-4 flex flex-col sm:flex-row justify-between items-center text-[11px] text-slate-400 gap-2">
           <span>${this.escapeHTML(this.state.sender.name)} • Document officiel</span>
-          <span class="font-medium">⚡ Facture émise avec <strong>Smart Invoice</strong> — Facturation Pro pour Créateurs</span>
+          <span class="font-medium">⚡ Facture émise avec <strong>Smart Invoice</strong> — Solution Pro pour Créateurs</span>
         </div>
 
       </div>
@@ -439,9 +457,20 @@ class SmartInvoiceApp {
       });
     });
 
-    // Sélecteur de Motif d'Arrière-plan
-    document.getElementById('pattern-select')?.addEventListener('change', (e) => {
-      this.state.pattern = e.target.value;
+    // Sélecteur d'Arrière-plan (Pattern)
+    document.querySelectorAll('.pattern-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const targetBtn = e.target.closest('.pattern-btn');
+        if (!targetBtn) return;
+        this.state.pattern = targetBtn.dataset.pattern;
+        this.syncFormFields();
+        this.render();
+      });
+    });
+
+    // Sceau officiel toggle
+    document.getElementById('stamp-toggle')?.addEventListener('change', (e) => {
+      this.state.stamp = e.target.checked;
       this.render();
     });
 
