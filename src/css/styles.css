@@ -1,6 +1,6 @@
-/* Smart Invoice — Styles personnalisés & Optimisation Impression */
+/* Smart Invoice — Styles personnalisés, Thèmes Disruptifs & Optimisation Impression */
 
-@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@600;700;800&family=Playfair+Display:ital,wght@0,600;0,700;1,600&display=swap');
 
 :root {
   --primary: #2563eb;
@@ -18,18 +18,166 @@ body {
   font-family: 'Space Grotesk', sans-serif;
 }
 
-/* Styles pour le rendu et aperçu de la facture A4 */
+.font-serif-luxury {
+  font-family: 'Playfair Display', serif;
+}
+
+/* ========================================================
+   STRUCTURE DE LA FACTURE A4
+   ======================================================== */
 .invoice-paper {
+  position: relative;
   background-color: #ffffff;
   color: #1e293b;
   min-height: 297mm;
   width: 100%;
   max-width: 210mm;
   margin: 0 auto;
-  box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+  overflow: hidden;
+  box-shadow: 0 25px 35px -5px rgba(0, 0, 0, 0.25), 0 10px 15px -5px rgba(0, 0, 0, 0.15);
+  transition: all 0.3s ease;
 }
 
-/* Optimisation pour l'impression native (Ctrl+P ou PDF) */
+/* ========================================================
+   ARRIÈRE-PLANS & MOTIFS D'ACCENTUATION
+   ======================================================== */
+
+/* Motif 1 : Grille subtile Tech / Micro-dots */
+.bg-pattern-dots {
+  background-image: radial-gradient(#cbd5e1 0.75px, transparent 0.75px);
+  background-size: 16px 16px;
+}
+
+/* Motif 2 : Lignes géométriques discrètes */
+.bg-pattern-grid {
+  background-image: linear-gradient(to right, #f1f5f9 1px, transparent 1px),
+                    linear-gradient(to bottom, #f1f5f9 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+
+/* Motif 3 : Filigrane Numéro de Facture Géant en Arrière-plan */
+.watermark-bg-number {
+  position: absolute;
+  top: 40%;
+  left: 50%;
+  transform: translate(-50%, -50%) rotate(-25deg);
+  font-size: 110px;
+  font-weight: 900;
+  color: rgba(15, 23, 42, 0.03);
+  white-space: nowrap;
+  pointer-events: none;
+  user-select: none;
+  z-index: 0;
+  font-family: 'Space Grotesk', sans-serif;
+}
+
+/* ========================================================
+   LES 4 THÈMES VISUELS DISRUPTIFS
+   ======================================================== */
+
+/* --- THÈME 1 : NEO-FINTECH (Bleu Électrique & Tech Moderne) --- */
+.theme-fintech .theme-header-band {
+  height: 8px;
+  background: linear-gradient(90deg, #2563eb, #6366f1, #38bdf8);
+}
+.theme-fintech .theme-accent-badge {
+  background: #eff6ff;
+  color: #1d4ed8;
+  border: 1px solid #bfdbfe;
+}
+.theme-fintech .theme-highlight-text {
+  color: #2563eb;
+}
+.theme-fintech .theme-payment-card {
+  background: linear-gradient(135deg, #f8fafc 0%, #eff6ff 100%);
+  border: 1px solid #bfdbfe;
+}
+.theme-fintech .theme-total-box {
+  background: #1e293b;
+  color: #ffffff;
+  border-radius: 12px;
+  padding: 16px 20px;
+}
+
+/* --- THÈME 2 : SAHARA GOLD (Luxe Africain & Prestige) --- */
+.theme-sahara .theme-header-band {
+  height: 8px;
+  background: linear-gradient(90deg, #d97706, #f59e0b, #78350f);
+}
+.theme-sahara .theme-accent-badge {
+  background: #fffbeb;
+  color: #b45309;
+  border: 1px solid #fde68a;
+}
+.theme-sahara .theme-highlight-text {
+  color: #b45309;
+}
+.theme-sahara h1 {
+  font-family: 'Playfair Display', serif;
+  letter-spacing: -0.5px;
+}
+.theme-sahara .theme-payment-card {
+  background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
+  border: 1px solid #fcd34d;
+}
+.theme-sahara .theme-total-box {
+  background: #78350f;
+  color: #ffffff;
+  border-radius: 12px;
+  padding: 16px 20px;
+}
+
+/* --- THÈME 3 : AFRO-POP (Turquoise Wave & Sunset Énergique) --- */
+.theme-vibrant .theme-header-band {
+  height: 8px;
+  background: linear-gradient(90deg, #06b6d4, #0ea5e9, #f97316);
+}
+.theme-vibrant .theme-accent-badge {
+  background: #ecfeff;
+  color: #0e7490;
+  border: 1px solid #a5f3fc;
+}
+.theme-vibrant .theme-highlight-text {
+  color: #0891b2;
+}
+.theme-vibrant .theme-payment-card {
+  background: linear-gradient(135deg, #f0fdfa 0%, #ffedd5 100%);
+  border: 1px solid #fed7aa;
+}
+.theme-vibrant .theme-total-box {
+  background: linear-gradient(135deg, #0891b2, #0284c7);
+  color: #ffffff;
+  border-radius: 14px;
+  padding: 16px 20px;
+}
+
+/* --- THÈME 4 : MINIMALIST STUDIO (Noir & Blanc Haute Couture / Éditorial) --- */
+.theme-editorial .theme-header-band {
+  height: 8px;
+  background: #0f172a;
+}
+.theme-editorial .theme-accent-badge {
+  background: #f1f5f9;
+  color: #0f172a;
+  border: 1px solid #cbd5e1;
+}
+.theme-editorial .theme-highlight-text {
+  color: #0f172a;
+}
+.theme-editorial .theme-payment-card {
+  background: #f8fafc;
+  border: 2px solid #0f172a;
+}
+.theme-editorial .theme-total-box {
+  background: #0f172a;
+  color: #ffffff;
+  border-radius: 4px;
+  padding: 16px 20px;
+}
+
+/* ========================================================
+   OPTIMISATION POUR L'IMPRESSION (CTRL+P & PDF)
+   ======================================================== */
 @media print {
   body {
     background: #ffffff !important;
@@ -50,13 +198,19 @@ body {
     padding: 0 !important;
   }
 
+  /* Préservation des fonds de couleur à l'impression */
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
   @page {
     size: A4 portrait;
-    margin: 10mm;
+    margin: 8mm;
   }
 }
 
-/* Animation douce pour les changements d'onglets */
+/* Animation douce */
 .fade-in {
   animation: fadeIn 0.25s ease-in-out;
 }
@@ -72,12 +226,12 @@ body {
   height: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: #f1f5f9;
+  background: #1e293b;
 }
 ::-webkit-scrollbar-thumb {
-  background: #cbd5e1;
+  background: #475569;
   border-radius: 3px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #94a3b8;
+  background: #64748b;
 }
